@@ -3,25 +3,64 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0f;
+  --foreground: #e4e4e7;
+  --neon-pink: #ff2d95;
+  --neon-cyan: #00f0ff;
+  --neon-purple: #b347ea;
+  --neon-green: #39ff14;
+  --neon-yellow: #ffe600;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Noto Sans SC", Arial, Helvetica, sans-serif;
 }
 
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #11111b;
+}
+::-webkit-scrollbar-thumb {
+  background: #33334c;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b347ea;
+}
+
+/* ── Utility layers ── */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .text-glow-neon {
+    text-shadow: 0 0 7px currentColor, 0 0 20px currentColor;
+  }
+
+  .border-glow {
+    box-shadow: 0 0 8px currentColor, inset 0 0 8px currentColor;
+  }
+
+  .gradient-neon {
+    background: linear-gradient(
+      135deg,
+      var(--neon-pink),
+      var(--neon-purple),
+      var(--neon-cyan)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .card-dark {
+    background: linear-gradient(145deg, #181825, #11111b);
+    border: 1px solid #1e1e2e;
   }
 }
