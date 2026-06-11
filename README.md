@@ -59,7 +59,7 @@ npm start
 
 | 字段 | 值 |
 |---|---|
-| 地址 | [/admin/login](http://localhost:3000/admin/login) |
+| 地址 | `/admin/login`（本地运行后访问） |
 | 邮箱 | `admin@100ways.com` |
 | 密码 | `admin123` |
 
