@@ -5,17 +5,31 @@
 :root {
   --background: #0a0a0f;
   --foreground: #e4e4e7;
-  --neon-pink: #ff2d95;
   --neon-cyan: #00f0ff;
-  --neon-purple: #b347ea;
+  --neon-pink: #ff2d95;
+  --neon-purple: #7c3aed;
   --neon-green: #39ff14;
   --neon-yellow: #ffe600;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: "Inter", "Noto Sans SC", Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), "Noto Sans SC", system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(124, 58, 237, 0.4);
+  color: #fff;
 }
 
 /* ── Scrollbar ── */
@@ -30,7 +44,14 @@ body {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b347ea;
+  background: #7c3aed;
+}
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ── Utility layers ── */
@@ -38,29 +59,84 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
 
-  .text-glow-neon {
-    text-shadow: 0 0 7px currentColor, 0 0 20px currentColor;
+/* ── Component layers ── */
+@layer components {
+  /* Glass card — default */
+  .card-glass {
+    @apply glass;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-glass:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
-  .border-glow {
-    box-shadow: 0 0 8px currentColor, inset 0 0 8px currentColor;
+  /* Glass card — cyan accent */
+  .card-glass-cyan {
+    @apply glass;
+    transition: all 0.3s ease;
+  }
+  .card-glass-cyan:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 240, 255, 0.15);
   }
 
-  .gradient-neon {
+  /* Glass card — pink accent */
+  .card-glass-pink {
+    @apply glass;
+    transition: all 0.3s ease;
+  }
+  .card-glass-pink:hover {
+    border-color: rgba(255, 45, 149, 0.3);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(255, 45, 149, 0.15);
+  }
+
+  /* Neon button */
+  .btn-neon {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .btn-neon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .btn-neon:hover::after {
+    opacity: 1;
+  }
+  .btn-neon-cyan {
+    @apply btn-neon;
+  }
+  .btn-neon-cyan::after {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+  .btn-neon-pink {
+    @apply btn-neon;
+  }
+  .btn-neon-pink::after {
+    box-shadow: 0 0 20px rgba(255, 45, 149, 0.4);
+  }
+
+  /* Divider */
+  .divider-neon {
+    height: 1px;
     background: linear-gradient(
-      135deg,
-      var(--neon-pink),
-      var(--neon-purple),
-      var(--neon-cyan)
+      90deg,
+      transparent 0%,
+      rgba(124, 58, 237, 0.5) 20%,
+      rgba(0, 240, 255, 0.5) 50%,
+      rgba(255, 45, 149, 0.5) 80%,
+      transparent 100%
     );
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .card-dark {
-    background: linear-gradient(145deg, #181825, #11111b);
-    border: 1px solid #1e1e2e;
+    border: none;
   }
 }

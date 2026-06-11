@@ -1,3 +1,5 @@
+// ── Server-only exports (API routes, server components) ──
+// Do NOT import from @/lib in client components — use @/lib/utils instead.
 export { prisma } from "./prisma";
 export { signToken, verifyToken, type JwtPayload } from "./auth";
 export { hashPassword, verifyPassword } from "./password";
@@ -15,7 +17,6 @@ export type {
   CategoryInput,
   TravelExperienceInput,
 } from "./validations";
-export { cn, slugify, formatPrice, parseImages } from "./utils";
 export {
   ok,
   created,
@@ -30,3 +31,6 @@ export {
   parsePagination,
   paginatedResponse,
 } from "./api-utils";
+
+// ── Shared utilities (safe for both server & client) ──
+export { cn, slugify, formatPrice, parseImages } from "./utils";
