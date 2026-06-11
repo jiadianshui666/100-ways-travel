@@ -5,7 +5,11 @@
 ```mermaid
 erDiagram
     User ||--o{ TravelExperience : "creates (author)"
+    User ||--o{ Favorite : "bookmarks"
+    User ||--o{ Comment : "writes"
     Category ||--o{ TravelExperience : "contains (category)"
+    TravelExperience ||--o{ Favorite : "favorited"
+    TravelExperience ||--o{ Comment : "commented on"
 
     User {
         string id PK "cuid()"
@@ -45,6 +49,22 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
+
+    Favorite {
+        string id PK "cuid()"
+        string userId FK "用户ID → User"
+        string experienceId FK "体验ID → TravelExperience"
+        datetime createdAt
+    }
+
+    Comment {
+        string id PK "cuid()"
+        string content "评论内容"
+        string userId FK "用户ID → User"
+        string experienceId FK "体验ID → TravelExperience"
+        datetime createdAt
+        datetime updatedAt
+    }
 ```
 
 ## 关系说明
@@ -58,6 +78,23 @@ erDiagram
 - 一个分类下可以有多个旅行体验
 - 删除分类时，如果存在关联体验，API 层面会拒绝删除
 - `categoryId` 为外键，指向 `Category.id`
+
+### User → Favorite (1:N)
+- 一个用户可以收藏多个体验
+- `userId` + `experienceId` 构成复合唯一约束，避免重复收藏
+- 收藏是 toggle 操作：已收藏则取消，未收藏则添加
+
+### User → Comment (1:N)
+- 一个用户可以发表多条评论
+- 评论内容经 HTML 标签清洗后存储，防止 XSS 攻击
+
+### TravelExperience → Favorite (1:N)
+- 一个体验可以被多个用户收藏
+- 收藏总数用于展示热度
+
+### TravelExperience → Comment (1:N)
+- 一个体验可以有多条评论
+- 评论按时间倒序排列
 
 ## 技术实现
 
@@ -75,3 +112,5 @@ erDiagram
 | User | 1 | admin@100ways.com / admin123 (ADMIN) |
 | Category | 5 | 城市探索 / 自然风光 / 美食之旅 / 极限冒险 / 文化体验 |
 | TravelExperience | 8 | 各分类 1-2 个体验，覆盖东京/冰岛/成都/巴黎/尼泊尔/京都/新西兰/曼谷 |
+| Favorite | 0 | 初始无收藏数据 |
+| Comment | 0 | 初始无评论数据 |

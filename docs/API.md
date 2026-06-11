@@ -139,6 +139,95 @@ curl "http://localhost:3000/api/experiences/search?q=拉面"
 
 ---
 
+### POST /api/register
+
+注册新用户。
+
+```bash
+curl -X POST http://localhost:3000/api/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"测试用户","email":"user@example.com","password":"Test1234"}'
+```
+
+密码要求：至少 8 位，包含大写字母、小写字母和数字。
+
+**响应** `201 Created`
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": { "id": "...", "name": "测试用户", "email": "user@example.com", "role": "USER" }
+}
+```
+
+---
+
+### GET /api/experiences/[slug]/favorite
+
+获取体验收藏状态和总数（可选登录）。
+
+```bash
+curl http://localhost:3000/api/experiences/tokyo-ramen-tour/favorite
+# 登录用户：
+curl http://localhost:3000/api/experiences/tokyo-ramen-tour/favorite \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**响应** `200 OK`
+```json
+{ "favorited": false, "count": 5 }
+```
+
+### POST /api/experiences/[slug]/favorite
+
+切换收藏状态（需登录）。已收藏则取消，未收藏则添加。
+
+```bash
+curl -X POST http://localhost:3000/api/experiences/tokyo-ramen-tour/favorite \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**响应** `200 OK` / `201 Created`
+```json
+{ "favorited": true }
+```
+
+---
+
+### GET /api/experiences/[slug]/comments
+
+获取体验评论列表。
+
+```bash
+curl http://localhost:3000/api/experiences/tokyo-ramen-tour/comments
+```
+
+**响应** `200 OK`
+```json
+[
+  {
+    "id": "...",
+    "content": "太棒的体验！",
+    "user": { "id": "...", "name": "用户", "avatar": null },
+    "createdAt": "2026-06-11T..."
+  }
+]
+```
+
+### POST /api/experiences/[slug]/comments
+
+发表评论（需登录）。内容自动清洗 HTML 标签。
+
+```bash
+curl -X POST http://localhost:3000/api/experiences/tokyo-ramen-tour/comments \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"content":"这是我梦寐以求的旅行方式！"}'
+```
+
+**响应** `201 Created`
+
+---
+
 ## 管理端接口
 
 所有管理端接口需在请求头中携带 JWT 令牌：
