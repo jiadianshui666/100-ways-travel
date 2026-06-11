@@ -1,0 +1,80 @@
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken, type JwtPayload } from "./auth";
+
+// ── Response helpers ──
+
+export function ok<T>(data: T, status = 200) {
+  return NextResponse.json(data, { status });
+}
+
+export function created<T>(data: T) {
+  return NextResponse.json(data, { status: 201 });
+}
+
+export function noContent() {
+  return new NextResponse(null, { status: 204 });
+}
+
+export function badRequest(message: string, errors?: unknown) {
+  return NextResponse.json({ error: message, details: errors }, { status: 400 });
+}
+
+export function unauthorized(message = "请先登录") {
+  return NextResponse.json({ error: message }, { status: 401 });
+}
+
+export function forbidden(message = "权限不足") {
+  return NextResponse.json({ error: message }, { status: 403 });
+}
+
+export function notFound(message = "资源不存在") {
+  return NextResponse.json({ error: message }, { status: 404 });
+}
+
+export function serverError(message = "服务器内部错误") {
+  return NextResponse.json({ error: message }, { status: 500 });
+}
+
+// ── Auth helpers ──
+
+export async function getAuthPayload(
+  request: NextRequest
+): Promise<JwtPayload | null> {
+  const header = request.headers.get("authorization");
+  if (!header?.startsWith("Bearer ")) return null;
+  const token = header.slice(7);
+  return verifyToken(token);
+}
+
+export async function requireAdmin(
+  request: NextRequest
+): Promise<JwtPayload | NextResponse> {
+  const payload = await getAuthPayload(request);
+  if (!payload) return unauthorized();
+  if (payload.role !== "ADMIN") return forbidden();
+  return payload;
+}
+
+// ── Pagination ──
+
+export function parsePagination(searchParams: URLSearchParams) {
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
+  const limit = Math.min(
+    50,
+    Math.max(1, parseInt(searchParams.get("limit") ?? "10", 10) || 10)
+  );
+  return { page, limit, skip: (page - 1) * limit };
+}
+
+export function paginatedResponse<T>(data: T[], total: number, page: number, limit: number) {
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      hasMore: page * limit < total,
+    },
+  };
+}
