@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn, formatPrice, parseImages } from "@/lib/utils";
+import { cn, formatPrice, parseImages, BLUR_PLACEHOLDER } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { type ExperienceData } from "@/hooks/useExperiences";
 
@@ -47,6 +47,8 @@ export function ExperienceCard({
             alt={experience.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDER}
             className={cn(
               "object-cover transition-all duration-700",
               "group-hover:scale-110",

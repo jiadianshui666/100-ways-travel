@@ -20,6 +20,14 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "100 Ways Travel — 百途旅行",
   description: "探索 100 种旅行方式，发现世界之美",
+  manifest: "/manifest.json",
+  icons: { icon: "/placeholder.svg" },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"),
+  openGraph: {
+    title: "100 Ways Travel — 百途旅行",
+    description: "探索 100 种旅行方式，发现世界之美",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

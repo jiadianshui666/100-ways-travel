@@ -1,0 +1,14 @@
+{
+  "name": "100 Ways Travel — 百途旅行",
+  "short_name": "百途旅行",
+  "description": "探索 100 种旅行方式，发现世界之美",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

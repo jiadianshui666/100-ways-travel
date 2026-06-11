@@ -86,16 +86,16 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="/admin/login"
+              href="/login"
               className="px-4 py-2 text-sm text-dark-200 hover:text-white transition-colors"
             >
-              后台
+              登录
             </Link>
             <Link
-              href="/search"
+              href="/register"
               className="px-5 py-2 text-sm rounded-lg bg-neon-purple/10 border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/20 hover:shadow-neon-purple transition-all duration-300"
             >
-              搜索体验
+              注册
             </Link>
           </div>
 
