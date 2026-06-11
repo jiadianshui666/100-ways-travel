@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cn, slugify, formatPrice, parseImages } from "./utils";
+import { cn, slugify, formatPrice, parseImages } from "@/lib/utils";
 
 describe("cn", () => {
   it("merges class names", () => {
