@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface Comment {
   id: string;
@@ -19,15 +19,15 @@ export function CommentSection({ slug }: CommentSectionProps) {
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchComments = () => {
+  const fetchComments = useCallback(() => {
     fetch(`/api/experiences/${slug}/comments`)
       .then((r) => r.json())
       .then((d) => { if (Array.isArray(d)) setComments(d); })
       .catch(() => {})
       .finally(() => setLoading(false));
-  };
+  }, [slug]);
 
-  useEffect(() => { fetchComments(); }, [slug]);
+  useEffect(() => { fetchComments(); }, [fetchComments]);
 
   const submit = async () => {
     if (!text.trim()) return;
