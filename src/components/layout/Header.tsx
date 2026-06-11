@@ -2,17 +2,19 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MobileMenu } from "./MobileMenu";
 
 const NAV_LINKS = [
   { href: "/", label: "首页" },
   { href: "/experiences", label: "探索" },
-  { href: "/categories", label: "分类" },
+  { href: "/search", label: "搜索" },
   { href: "/about", label: "关于" },
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -32,7 +34,16 @@ export function Header() {
 
   return (
     <>
+      {/* Skip to content — accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-neon-purple focus:text-white focus:outline-none"
+      >
+        跳到主要内容
+      </a>
+
       <header
+        role="banner"
         className={cn(
           "fixed top-0 inset-x-0 z-50 h-16 transition-all duration-300",
           scrolled
@@ -45,21 +56,27 @@ export function Header() {
           <Link
             href="/"
             className="flex items-center gap-2 group"
-            aria-label="100 Ways Travel 首页"
+            aria-label="100 Ways Travel — 返回首页"
           >
-            <span className="text-2xl">✈️</span>
+            <span className="text-2xl" aria-hidden="true">✈️</span>
             <span className="hidden sm:inline font-display text-lg font-bold text-neon-gradient">
               100 Ways Travel
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1" aria-label="主导航">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 rounded-lg text-dark-200 hover:text-white hover:bg-white/5 transition-all duration-200"
+                className={cn(
+                  "px-4 py-2 rounded-lg transition-all duration-200",
+                  pathname === link.href
+                    ? "text-white bg-white/10"
+                    : "text-dark-200 hover:text-white hover:bg-white/5"
+                )}
+                aria-current={pathname === link.href ? "page" : undefined}
               >
                 {link.label}
               </Link>
@@ -69,16 +86,16 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="/login"
+              href="/admin/login"
               className="px-4 py-2 text-sm text-dark-200 hover:text-white transition-colors"
             >
-              登录
+              后台
             </Link>
             <Link
-              href="/register"
+              href="/search"
               className="px-5 py-2 text-sm rounded-lg bg-neon-purple/10 border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/20 hover:shadow-neon-purple transition-all duration-300"
             >
-              注册
+              搜索体验
             </Link>
           </div>
 
@@ -87,12 +104,15 @@ export function Header() {
             className="md:hidden p-2 rounded-lg text-dark-200 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileOpen(true)}
             aria-label="打开菜单"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
           >
             <svg
               className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"

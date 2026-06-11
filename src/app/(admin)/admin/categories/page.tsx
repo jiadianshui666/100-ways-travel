@@ -52,6 +52,7 @@ export default function AdminCategoriesPage() {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchCategories(); }, [token]);
 
   const resetForm = () => {

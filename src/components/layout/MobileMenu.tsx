@@ -21,6 +21,17 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
 
+  // Focus trap — focus first link when opened
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        const firstLink = panelRef.current?.querySelector("a");
+        firstLink?.focus();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   return (
     <>
       {/* Backdrop */}
@@ -35,6 +46,7 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
 
       {/* Panel */}
       <div
+        id="mobile-menu"
         ref={panelRef}
         className={cn(
           "fixed top-0 right-0 z-50 h-full w-72 bg-dark-800/95 backdrop-blur-xl border-l border-white/5 shadow-glass md:hidden",
@@ -51,56 +63,46 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
           onClick={onClose}
           aria-label="关闭菜单"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        {/* Logo */}
         <div className="mb-8">
           <span className="font-display text-xl font-bold text-neon-gradient">
             100 Ways Travel
           </span>
         </div>
 
-        {/* Nav links */}
-        {links.map((link, i) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            onClick={onClose}
-            className="px-4 py-3 rounded-lg text-dark-100 hover:text-white hover:bg-white/5 transition-all duration-200"
-            style={{ animationDelay: `${i * 50}ms` }}
-          >
-            {link.label}
-          </Link>
-        ))}
+        <nav aria-label="移动导航">
+          {links.map((link, i) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={onClose}
+              className="px-4 py-3 rounded-lg text-dark-100 hover:text-white hover:bg-white/5 transition-all duration-200 block"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-        <hr className="my-4 divider-neon" />
+        <hr className="my-4 divider-neon" aria-hidden="true" />
 
         <Link
-          href="/login"
+          href="/admin/login"
           onClick={onClose}
           className="px-4 py-3 rounded-lg text-dark-200 hover:text-white transition-colors"
         >
-          登录
+          后台管理
         </Link>
         <Link
-          href="/register"
+          href="/search"
           onClick={onClose}
           className="px-4 py-3 rounded-lg text-center bg-neon-purple/10 border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/20 transition-all"
         >
-          注册
+          搜索体验
         </Link>
       </div>
     </>

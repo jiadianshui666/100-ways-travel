@@ -26,6 +26,7 @@ export function ExperienceCard({
   return (
     <Link
       href={`/experiences/${experience.slug}`}
+      aria-label={`查看体验：${experience.title}`}
       className={cn(
         "group block glass rounded-2xl overflow-hidden transition-all duration-500",
         "hover:-translate-y-2 hover:shadow-card",
