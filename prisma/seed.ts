@@ -21,7 +21,7 @@ async function main() {
       email: "admin@100ways.com",
       passwordHash: await hashPassword("admin123"),
       role: "ADMIN",
-      avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=admin",
+      avatar: null,
       bio: "百途旅行的管理员，热爱旅行与代码。",
     },
   });
