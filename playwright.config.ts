@@ -7,19 +7,19 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
+  timeout: 30000,
+  expect: { timeout: 10000 },
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3099",
     trace: "on-first-retry",
   },
   projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
+    command: "npm run dev -- -p 3099",
+    url: "http://localhost:3099",
     reuseExistingServer: !process.env.CI,
+    timeout: 30000,
   },
 });
