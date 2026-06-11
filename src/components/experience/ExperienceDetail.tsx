@@ -9,6 +9,8 @@ import { InfoCards } from "./InfoCards";
 import { StorySection } from "./StorySection";
 import { ImageGallery } from "./ImageGallery";
 import { RelatedExperiences } from "./RelatedExperiences";
+import { FavoriteButton } from "./FavoriteButton";
+import { CommentSection } from "./CommentSection";
 
 
 interface Props {
@@ -69,7 +71,12 @@ export function ExperienceDetail({ slug }: Props) {
         createdAt={experience.createdAt}
       />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-16">
+        {/* Favorite button */}
+        <div className="flex justify-end">
+          <FavoriteButton slug={slug} />
+        </div>
+
         <InfoCards
           duration={experience.duration}
           price={experience.price}
@@ -81,6 +88,9 @@ export function ExperienceDetail({ slug }: Props) {
         {parseImages(experience.images).length > 1 && (
           <ImageGallery images={experience.images} title={experience.title} />
         )}
+
+        {/* Comments */}
+        <CommentSection slug={slug} />
 
         {filtered.length > 0 && (
           <>
