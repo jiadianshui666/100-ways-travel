@@ -11,10 +11,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        inter: ["var(--font-inter)", "system-ui", "sans-serif"],
-        grotesk: ["var(--font-space-grotesk)", "monospace"],
-        display: ["var(--font-space-grotesk)", "monospace"],
-        body: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["Inter", "Noto Sans SC", "system-ui", "-apple-system", "sans-serif"],
+        display: ["Space Grotesk", "Inter", "Noto Sans SC", "monospace"],
+        body: ["Inter", "Noto Sans SC", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
         background: "var(--background)",
