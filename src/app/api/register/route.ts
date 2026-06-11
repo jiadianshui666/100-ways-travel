@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, registerSchema, hashPassword, badRequest, signToken } from "@/lib";
+import { prisma, registerSchema, hashPassword, badRequest, signToken, withErrorHandler } from "@/lib";
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const body = await request.json().catch(() => null);
   if (!body) return badRequest("请求体不能为空");
 
@@ -29,4 +29,4 @@ export async function POST(request: NextRequest) {
     },
     { status: 201 }
   );
-}
+});

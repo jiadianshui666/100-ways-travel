@@ -12,7 +12,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "测试用户",
       email: "test@example.com",
-      password: "123456",
+      password: "Test1234",
     });
     expect(result.success).toBe(true);
   });
@@ -21,7 +21,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "A",
       email: "test@example.com",
-      password: "123456",
+      password: "Test1234",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -33,7 +33,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "A".repeat(51),
       email: "test@example.com",
-      password: "123456",
+      password: "Test1234",
     });
     expect(result.success).toBe(false);
   });
@@ -42,7 +42,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "测试",
       email: "not-an-email",
-      password: "123456",
+      password: "Test1234",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -50,11 +50,11 @@ describe("registerSchema", () => {
     }
   });
 
-  it("rejects password shorter than 6", () => {
+  it("rejects password shorter than 8", () => {
     const result = registerSchema.safeParse({
       name: "测试",
       email: "test@example.com",
-      password: "12345",
+      password: "Ab1",
     });
     expect(result.success).toBe(false);
   });
@@ -63,7 +63,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "",
       email: "test@example.com",
-      password: "123456",
+      password: "Test1234",
     });
     expect(result.success).toBe(false);
   });
@@ -82,7 +82,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "Test",
       email: "a@b.com",
-      password: "x".repeat(101),
+      password: "Aa1" + "x".repeat(98),
     });
     expect(result.success).toBe(false);
   });
@@ -91,7 +91,7 @@ describe("registerSchema", () => {
     const result = registerSchema.safeParse({
       name: "Test User",
       email: "  test@example.com  ",
-      password: "123456",
+      password: "Test1234",
     });
     // Zod email() rejects whitespace — should fail
     expect(result.success).toBe(false);

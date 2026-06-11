@@ -4,10 +4,11 @@ import {
   requireAdmin,
   categorySchema,
   badRequest,
+  withErrorHandler,
 } from "@/lib";
 
 // GET /api/admin/categories — 管理员分类列表
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandler(async (request: NextRequest) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -26,10 +27,10 @@ export async function GET(request: NextRequest) {
       experienceCount: _count.travelExperiences,
     }))
   );
-}
+});
 
 // POST /api/admin/categories — 创建分类
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -43,4 +44,4 @@ export async function POST(request: NextRequest) {
 
   const category = await prisma.category.create({ data: parsed.data });
   return NextResponse.json(category, { status: 201 });
-}
+});

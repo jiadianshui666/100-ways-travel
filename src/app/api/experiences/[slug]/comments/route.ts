@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, getAuthPayload } from "@/lib";
+import { prisma, getAuthPayload, withErrorHandler } from "@/lib";
 import { z } from "zod";
 
 const commentSchema = z.object({ content: z.string().min(1).max(1000) });
 
+// Helper to sanitize user content — strips HTML tags
+function sanitizeContent(content: string): string {
+  return content.replace(/<[^>]*>/g, "").trim();
+}
+
 // GET — list comments
-export async function GET(
+export const GET = withErrorHandler(async (
   _request: NextRequest,
   { params }: { params: { slug: string } }
-) {
+) => {
   const experience = await prisma.travelExperience.findUnique({
     where: { slug: params.slug },
     select: { id: true },
@@ -22,13 +27,13 @@ export async function GET(
   });
 
   return NextResponse.json(comments);
-}
+});
 
 // POST — create comment
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { slug: string } }
-) {
+) => {
   const auth = await getAuthPayload(request);
   if (!auth) return NextResponse.json({ error: "请先登录" }, { status: 401 });
 
@@ -44,7 +49,7 @@ export async function POST(
 
   const comment = await prisma.comment.create({
     data: {
-      content: parsed.data.content,
+      content: sanitizeContent(parsed.data.content),
       userId: auth.sub,
       experienceId: experience.id,
     },
@@ -52,4 +57,4 @@ export async function POST(
   });
 
   return NextResponse.json(comment, { status: 201 });
-}
+});

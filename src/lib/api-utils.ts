@@ -35,6 +35,32 @@ export function serverError(message = "服务器内部错误") {
   return NextResponse.json({ error: message }, { status: 500 });
 }
 
+// ── API route error handler wrapper ──
+// Wraps a route handler with try/catch so unhandled errors return JSON 500
+// instead of an HTML error page.
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ApiHandler<P = any> = (
+  request: NextRequest,
+  context: { params: P }
+) => Promise<NextResponse>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function withErrorHandler<P = any>(handler: ApiHandler<P>): ApiHandler<P> {
+  return async (request, context) => {
+    try {
+      return await handler(request, context);
+    } catch (error) {
+      console.error("[api] Unhandled error:", error);
+      const message =
+        process.env.NODE_ENV === "production"
+          ? "服务器内部错误"
+          : `服务器错误: ${error instanceof Error ? error.message : "未知错误"}`;
+      return serverError(message);
+    }
+  };
+}
+
 // ── Auth helpers ──
 
 export async function getAuthPayload(

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, getAuthPayload } from "@/lib";
+import { prisma, getAuthPayload, withErrorHandler } from "@/lib";
 
 // POST — toggle favorite
-export async function POST(
+export const POST = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { slug: string } }
-) {
+) => {
   const auth = await getAuthPayload(request);
   if (!auth) return NextResponse.json({ error: "请先登录" }, { status: 401 });
 
@@ -28,13 +28,13 @@ export async function POST(
     data: { userId: auth.sub, experienceId: experience.id },
   });
   return NextResponse.json({ favorited: true }, { status: 201 });
-}
+});
 
 // GET — check if user favorited
-export async function GET(
+export const GET = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { slug: string } }
-) {
+) => {
   const auth = await getAuthPayload(request);
   const experience = await prisma.travelExperience.findUnique({
     where: { slug: params.slug },
@@ -53,4 +53,4 @@ export async function GET(
   }
 
   return NextResponse.json({ favorited, count });
-}
+});

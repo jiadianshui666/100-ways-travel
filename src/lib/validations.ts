@@ -4,7 +4,13 @@ import { z } from "zod";
 export const registerSchema = z.object({
   name: z.string().min(2, "姓名至少 2 个字符").max(50),
   email: z.string().email("请输入有效的邮箱"),
-  password: z.string().min(6, "密码至少 6 位").max(100),
+  password: z
+    .string()
+    .min(8, "密码至少 8 位")
+    .max(100)
+    .regex(/[A-Z]/, "密码需包含大写字母")
+    .regex(/[a-z]/, "密码需包含小写字母")
+    .regex(/[0-9]/, "密码需包含数字"),
 });
 
 export const loginSchema = z.object({
@@ -53,3 +59,21 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type TravelExperienceInput = z.infer<typeof travelExperienceSchema>;
+
+// ── Form-specific schemas (with preprocess for HTML input coercion) ──
+// Used by client components like ExperienceForm
+
+export const travelExperienceFormSchema = z.object({
+  title: z.string().min(1, "请输入标题").max(200),
+  slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/, "仅小写字母、数字、连字符"),
+  description: z.string().min(1, "请输入描述"),
+  location: z.string().min(1, "请输入地点"),
+  price: z.preprocess((v) => Number(v ?? 0), z.number().min(0, "价格不能为负")),
+  duration: z.string().min(1, "请输入时长"),
+  images: z.array(z.object({ url: z.string().min(1, "请输入图片 URL") })),
+  featured: z.boolean(),
+  published: z.boolean(),
+  categoryId: z.string().min(1, "请选择分类"),
+});
+
+export type TravelExperienceFormInput = z.infer<typeof travelExperienceFormSchema>;

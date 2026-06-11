@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { withErrorHandler } from "@/lib";
 
-export async function GET() {
+export const GET = withErrorHandler(async () => {
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
     include: {
@@ -17,4 +18,4 @@ export async function GET() {
       experienceCount: _count.travelExperiences,
     }))
   );
-}
+});

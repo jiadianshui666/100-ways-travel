@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, requireAdmin, badRequest, notFound, noContent } from "@/lib";
+import { prisma, requireAdmin, badRequest, notFound, noContent, withErrorHandler } from "@/lib";
 import { z } from "zod";
 
 // 部分更新 schema
@@ -17,10 +17,10 @@ const updateExperienceSchema = z.object({
 });
 
 // PUT /api/admin/experiences/[id] — 更新体验
-export async function PUT(
+export const PUT = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -51,13 +51,13 @@ export async function PUT(
   });
 
   return NextResponse.json(updated);
-}
+});
 
 // DELETE /api/admin/experiences/[id] — 删除体验
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -68,4 +68,4 @@ export async function DELETE(
 
   await prisma.travelExperience.delete({ where: { id: params.id } });
   return noContent();
-}
+});

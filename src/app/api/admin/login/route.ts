@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, loginSchema, signToken, verifyPassword, badRequest, unauthorized } from "@/lib";
+import { prisma, loginSchema, signToken, verifyPassword, badRequest, unauthorized, withErrorHandler } from "@/lib";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
+  // Rate limiting: 5 attempts per minute per IP
+  const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
+  const rateLimit = checkRateLimit(`login:${ip}`, { maxRequests: 5, windowMs: 60_000 });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "登录尝试过于频繁，请稍后再试" },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rateLimit.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   const body = await request.json().catch(() => null);
   if (!body) return badRequest("请求体不能为空");
 
@@ -30,4 +41,4 @@ export async function POST(request: NextRequest) {
       avatar: user.avatar,
     },
   });
-}
+});

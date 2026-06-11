@@ -9,6 +9,7 @@ export {
   updateProfileSchema,
   categorySchema,
   travelExperienceSchema,
+  travelExperienceFormSchema,
 } from "./validations";
 export type {
   RegisterInput,
@@ -16,6 +17,7 @@ export type {
   UpdateProfileInput,
   CategoryInput,
   TravelExperienceInput,
+  TravelExperienceFormInput,
 } from "./validations";
 export {
   ok,
@@ -26,11 +28,13 @@ export {
   forbidden,
   notFound,
   serverError,
+  withErrorHandler,
   getAuthPayload,
   requireAdmin,
   parsePagination,
   paginatedResponse,
 } from "./api-utils";
+export type { ApiHandler } from "./api-utils";
 
 // ── Shared utilities (safe for both server & client) ──
 export { cn, slugify, formatPrice, parseImages } from "./utils";

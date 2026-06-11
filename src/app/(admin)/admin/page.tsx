@@ -8,7 +8,7 @@ interface Stats {
   published: number;
   featured: number;
   categories: number;
-  views: number;
+  favorites: number;
 }
 
 export default function AdminDashboardPage() {
@@ -34,12 +34,18 @@ export default function AdminDashboardPage() {
 
         if (expData) {
           const experiences = expData.data || [];
+          // Count total favorites across all experiences from the admin list
+          const favoritesCount = experiences.reduce(
+            (sum: number, e: { _count?: { favorites?: number } }) =>
+              sum + (e._count?.favorites ?? 0),
+            0
+          );
           setStats({
             total: expData.pagination?.total ?? experiences.length,
             published: experiences.filter((e: { published: boolean }) => e.published).length,
             featured: experiences.filter((e: { featured: boolean }) => e.featured).length,
             categories: catData?.length ?? 0,
-            views: 12847,
+            favorites: favoritesCount,
           });
         }
       } finally {
@@ -53,7 +59,7 @@ export default function AdminDashboardPage() {
     { label: "总体验数", value: stats?.total ?? "-", icon: "✈️", color: "cyan" as const },
     { label: "已发布", value: stats?.published ?? "-", icon: "📝", color: "green" as const },
     { label: "精选体验", value: stats?.featured ?? "-", icon: "⭐", color: "yellow" as const },
-    { label: "浏览总量", value: stats?.views?.toLocaleString() ?? "-", icon: "👁️", color: "purple" as const },
+    { label: "收藏总数", value: stats?.favorites?.toLocaleString() ?? "-", icon: "❤️", color: "purple" as const },
     { label: "分类数", value: stats?.categories ?? "-", icon: "📂", color: "pink" as const },
   ];
 

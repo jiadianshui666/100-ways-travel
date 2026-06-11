@@ -30,7 +30,7 @@ export function LoginForm() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "登录失败");
-      localStorage.setItem("auth", JSON.stringify({ user: json.user, token: json.token }));
+      localStorage.setItem("admin-auth", JSON.stringify({ user: json.user, token: json.token }));
       router.push("/");
     } catch (e) {
       setError(e instanceof Error ? e.message : "登录失败");

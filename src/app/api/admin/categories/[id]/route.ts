@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma, requireAdmin, badRequest, notFound, noContent } from "@/lib";
+import { prisma, requireAdmin, badRequest, notFound, noContent, withErrorHandler } from "@/lib";
 import { z } from "zod";
 
 const updateCategorySchema = z.object({
@@ -10,10 +10,10 @@ const updateCategorySchema = z.object({
 });
 
 // PUT /api/admin/categories/[id] — 更新分类
-export async function PUT(
+export const PUT = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -35,13 +35,13 @@ export async function PUT(
     data: parsed.data,
   });
   return NextResponse.json(updated);
-}
+});
 
 // DELETE /api/admin/categories/[id] — 删除分类
-export async function DELETE(
+export const DELETE = withErrorHandler(async (
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -60,4 +60,4 @@ export async function DELETE(
 
   await prisma.category.delete({ where: { id: params.id } });
   return noContent();
-}
+});

@@ -4,3 +4,5 @@ Disallow: /admin
 Disallow: /api
 
 Sitemap: https://100waystravel.com/sitemap.xml
+# NOTE: Update the sitemap URL above to match your production domain.
+# Also set NEXT_PUBLIC_BASE_URL env var to your production URL for the dynamic sitemap.

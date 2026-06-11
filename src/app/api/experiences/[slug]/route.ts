@@ -1,10 +1,10 @@
-import { prisma, notFound } from "@/lib";
+import { prisma, notFound, withErrorHandler } from "@/lib";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export const GET = withErrorHandler(async (
   _request: NextRequest,
   { params }: { params: { slug: string } }
-) {
+) => {
   const experience = await prisma.travelExperience.findUnique({
     where: { slug: params.slug, published: true },
     include: {
@@ -16,4 +16,4 @@ export async function GET(
   if (!experience) return notFound("旅行体验不存在");
 
   return NextResponse.json(experience);
-}
+});

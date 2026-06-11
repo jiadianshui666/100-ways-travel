@@ -3,24 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { cn } from "@/lib/utils";
+import { travelExperienceFormSchema, type TravelExperienceFormInput } from "@/lib/validations";
 import { toast } from "@/components/ui/Toaster";
-
-const schema = z.object({
-  title: z.string().min(1, "请输入标题").max(200),
-  slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/, "仅小写字母、数字、连字符"),
-  description: z.string().min(1, "请输入描述"),
-  location: z.string().min(1, "请输入地点"),
-  price: z.preprocess((v) => Number(v ?? 0), z.number().min(0, "价格不能为负")),
-  duration: z.string().min(1, "请输入时长"),
-  images: z.array(z.object({ url: z.string().min(1, "请输入图片 URL") })),
-  featured: z.boolean(),
-  published: z.boolean(),
-  categoryId: z.string().min(1, "请选择分类"),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 interface Category {
   id: string;
@@ -50,9 +35,9 @@ export function ExperienceForm({ token, defaultValues, mode }: ExperienceFormPro
   const [categories, setCategories] = useState<Category[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
-  const form = useForm<FormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(schema) as any,
+  const form = useForm<TravelExperienceFormInput>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Zod 4 + @hookform/resolvers compatibility
+    resolver: zodResolver(travelExperienceFormSchema) as any,
     defaultValues: {
       title: defaultValues?.title ?? "",
       slug: defaultValues?.slug ?? "",
@@ -98,17 +83,20 @@ export function ExperienceForm({ token, defaultValues, mode }: ExperienceFormPro
       .then((data) => {
         if (Array.isArray(data)) setCategories(data);
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error("Failed to load categories:", err);
+        toast("error", "加载分类失败");
+      });
   }, [token]);
 
   const onSubmit = useCallback(
-    async (data: FormValues) => {
+    async (data: TravelExperienceFormInput) => {
       if (!token) return;
       setSubmitting(true);
       try {
         const payload = {
           ...data,
-          images: data.images.map((img) => img.url),
+          images: data.images.map((img: { url: string }) => img.url),
         };
 
         const url =

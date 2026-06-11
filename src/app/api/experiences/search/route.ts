@@ -1,7 +1,7 @@
-import { prisma, parsePagination, paginatedResponse } from "@/lib";
+import { prisma, parsePagination, paginatedResponse, withErrorHandler } from "@/lib";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandler(async (request: NextRequest) => {
   const { searchParams } = request.nextUrl;
   const q = searchParams.get("q")?.trim();
   const { page, limit, skip } = parsePagination(searchParams);
@@ -34,4 +34,4 @@ export async function GET(request: NextRequest) {
   ]);
 
   return NextResponse.json(paginatedResponse(data, total, page, limit));
-}
+});

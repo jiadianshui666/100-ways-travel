@@ -6,11 +6,12 @@ import {
   badRequest,
   parsePagination,
   paginatedResponse,
+  withErrorHandler,
 } from "@/lib";
 import { JwtPayload } from "@/lib/auth";
 
 // GET /api/admin/experiences — 管理员列表（含未发布）
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandler(async (request: NextRequest) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -30,16 +31,17 @@ export async function GET(request: NextRequest) {
       include: {
         category: { select: { id: true, name: true, slug: true } },
         author: { select: { id: true, name: true, email: true } },
+        _count: { select: { favorites: true } },
       },
     }),
     prisma.travelExperience.count({ where }),
   ]);
 
   return NextResponse.json(paginatedResponse(data, total, page, limit));
-}
+});
 
 // POST /api/admin/experiences — 创建体验
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandler(async (request: NextRequest) => {
   const auth = await requireAdmin(request);
   if (!("sub" in auth)) return auth;
 
@@ -65,4 +67,4 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(experience, { status: 201 });
-}
+});
